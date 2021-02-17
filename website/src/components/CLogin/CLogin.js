@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import fire from '../../fire';
 import { Link, Redirect } from 'react-router-dom';
-import {useAuth} from "../../context/auth"
 import './authForm.css'
 
 
-export default function Login() {
-  const [isUser, setUser] =useState("");
-  const [isLoggedIn, setLoggedIn] = useState(false);
+export default function Login(props) {
+  const {user, setUser} = props
   const [isErrorUS, setIsErrorUS] = useState(false);
   const [isErrorPS, setIsErrorPS] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const {setAuthTokens} = useAuth();
-
-  const clearInputs = () => {
-    setUserName("");
-    setPassword("");
-  }
 
   const clearErrors = () => {
     setIsErrorUS(false);
@@ -45,18 +37,13 @@ export default function Login() {
       })
   }
 
-  const handleLogout = () => {
-    fire.auth().signOut();
-  }
-
   const authListener = () => {
-    fire.auth().onAuthStateChanged(isUser => {
-      if (isUser) {
-        clearInputs();
-        setLoggedIn(true);
-        setUser(isUser);
+    console.log(user)
+    fire.auth().onAuthStateChanged(user => {
+      if (user) {
+        setUser(true);
       } else {
-        setUser("");
+        setUser(false);
       }
     })
   }
@@ -64,10 +51,6 @@ export default function Login() {
   useEffect(() => {
     authListener();
   }, [])
-
-  if (isLoggedIn) {
-    return <Redirect to="/" />;
-  }
 
   return(
     <div className="card">
@@ -79,6 +62,7 @@ export default function Login() {
       <Link to="/signup">Don't have an account?</Link>
       {isErrorUS && <div className="error">The username or password provided was incorrect!</div>}
       {isErrorPS && <div className="error">The username or password provided was incorrect!</div>}
+      {user && <Redirect to="/data" />}
     </div>
   );
 }

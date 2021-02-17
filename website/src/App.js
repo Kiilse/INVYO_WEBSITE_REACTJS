@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import fire from './fire';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Redirect,
 } from "react-router-dom";
 
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button';
 
 import PrivateRoute from './Route/PrivateRoute'
 import CDashboard from './components/CDashboard/CDashboard'
@@ -17,39 +20,39 @@ import CSignup from './components/CLogin/CSignup'
 import CData from './components/CData/Cdata'
 import CTodo from './components/CTodo/Ctodo'
 
-import {AuthContext} from './context/auth'
+export default function App() { 
+  const [user, setUser] =useState(false);
 
-export default function App() {
-  const existingTokens = JSON.parse(localStorage.getItem("tokens"));
-  const [authTokens, setAuthTokens] = useState(existingTokens);
-
-  const setTokens = (data) => {
-    localStorage.setItem("tokens", JSON.stringify(data));
-    setAuthTokens(data);
+  const handleLogout = () => {
+    fire.auth().signOut().then( () => {
+      setUser(false)
+    })
+    .catch(error => console.log('Error: ', error));
   }
-
   return (
-    <AuthContext.Provider value={{authTokens, setAuthTokens: setTokens}} >
       <Router>     
         <Navbar bg="dark" variant="dark">
           <Navbar.Brand href="/">INVYO TEST</Navbar.Brand>
           <Nav className="justify-content-end">
-            <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/data">Data</Nav.Link>
             <Nav.Link href="/todo">Todo</Nav.Link>
-            <Nav.Link href="/login">Login</Nav.Link>
+            <Button onClick={handleLogout}>Logout</Button>
           </Nav>
         </Navbar>
         <div className="wrapper">
           <Switch>
-            <Route exact path="/" component={CDashboard}/>
-            <Route exact path="/login" component={CLogin}/>
+            <Route exact path="/login">
+              <CLogin user={user} setUser={setUser}/>
+            </Route>
             <Route exact path="/signup" component={CSignup}/>
-            <PrivateRoute path="/data" component={CData}/>
-            <PrivateRoute path="/todo" component={CTodo}/>
+            <Route path="/data">
+              <CData user={user}/>
+            </Route>
+            <Route path="/todo">
+              <CTodo user={user} setUser={setUser}/>
+            </Route>
           </Switch>
         </div>
       </Router>
-    </AuthContext.Provider>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import fire from '../../fire';
 import { Link, Redirect } from 'react-router-dom';
-import {useAuth} from "../../context/auth"
+
 import './authForm.css'
 
 export default function Signup() {
@@ -11,7 +11,6 @@ export default function Signup() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const {setAuthTokens} = useAuth();
   
   const clearErrors = () => {
     setIsErrorUS(false);
