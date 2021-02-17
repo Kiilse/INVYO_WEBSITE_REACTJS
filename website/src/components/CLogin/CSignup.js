@@ -1,35 +1,45 @@
 import React, { useState } from 'react';
+import fire from '../../fire';
 import { Link, Redirect } from 'react-router-dom';
-import axios from 'axios';
 import {useAuth} from "../../context/auth"
 import './authForm.css'
 
 export default function Signup() {
   const [isSignup, setSignup] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isErrorUS, setIsErrorUS] = useState(false);
+  const [isErrorPS, setIsErrorPS] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const {setAuthTokens} = useAuth();
   
-  function postLogin() {
-    axios.post("https://www.somePlace.com/auth/signup", {
-      userName, 
-      password
-    }).then(result => {
-      if (result.status === 200) {
-        setAuthTokens(result.data);
-        setSignup(true);
-      } else {
-        setIsError(true);
+  const clearErrors = () => {
+    setIsErrorUS(false);
+    setIsErrorPS(false);
+  }
+
+  const handleSignup = () => {
+    clearErrors();
+    fire
+    .auth()
+    .createUserWithEmailAndPassword(userName, password)
+    .catch(err => {
+      switch(err.code) {
+        case "auth/email-already-use":
+        case "auth/invalid-email":
+          setIsErrorUS(err.message);
+          break;
+        case "auth/weak-password":
+          setIsErrorPS(err.message);
+          break;
+        default:
+            break
       }
-    }).catch(e => {
-      setIsError(true);
-    });
+    })
   }
 
   if (isSignup) {
-    return <Redirect to="/" />;
+    return <Redirect to="/login" />;
   }
 
   return(
@@ -38,10 +48,11 @@ export default function Signup() {
         <input className="input" type="username" value={userName} onChange={e => { setUserName(e.target.value)}} placeholder="email"/>
         <input className="input" type="password" value={password} onChange={e => { setPassword(e.target.value)}} placeholder="password"/>
         <input className="input" type="password Confirmation" value={passwordConfirm} onChange={e => { setPasswordConfirm(e.target.value)}} placeholder="password Confirmation"/>
-        <button onClick={postLogin}>Sign in</button>
+        <button onClick={handleSignup}>Sign in</button>
       </div>
       <Link to="/login">Already have an account?</Link>
-      {isError && <div className="error">The username or password provided was incorrect!</div>}
+      {isErrorUS && <div className="error">The username or password provided was incorrect!</div>}
+      {isErrorPS && <div className="error">The username or password provided was incorrect!</div>}
     </div>
   );
 }
