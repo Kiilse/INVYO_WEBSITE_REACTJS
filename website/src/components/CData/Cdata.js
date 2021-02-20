@@ -1,15 +1,9 @@
 import React from 'react';
-import {Redirect} from "react-router-dom";
-export default function CData(props) {
-    const {user} = props
+
+export default function CData() {
     return(
         <div>
-            {user ? (
-                <h2>Data</h2>
-    
-            ) : (
-                <Redirect to="/login" />
-            )}
+            <h2>Data</h2>
         </div>
     );
 }

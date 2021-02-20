@@ -1,58 +1,77 @@
-import React, { useState } from 'react';
+import React, {Component} from 'react';
 import fire from './fire';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Redirect,
 } from "react-router-dom";
 
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 
-import PrivateRoute from './Route/PrivateRoute'
-import CDashboard from './components/CDashboard/CDashboard'
+import { Redirect, Route } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute'
+import PublicRoute from './components/PublicRoute'
+
 import CLogin from './components/CLogin/CLogin'
 import CSignup from './components/CLogin/CSignup'
 import CData from './components/CData/Cdata'
 import CTodo from './components/CTodo/Ctodo'
 
-export default function App() { 
-  const [user, setUser] =useState(false);
+import { isLogin, logout } from './utils';
 
-  const handleLogout = () => {
-    fire.auth().signOut().then( () => {
-      setUser(false)
-    })
-    .catch(error => console.log('Error: ', error));
+class Home extends Component {
+  render() {
+      return (
+        isLogin() ?
+          <Redirect to="/todo" />
+        : <Redirect to="/login" />
+      )
   }
-  return (
-      <Router>     
+}
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  handleLogout = () => {
+    fire.auth().signOut();
+    logout();
+    return (
+      <Redirect to="/login"/>
+    )
+  }
+
+  render() {
+    console.log(isLogin())
+    return (
+      <Router>
+        {isLogin() ? 
         <Navbar bg="dark" variant="dark">
           <Navbar.Brand href="/">INVYO TEST</Navbar.Brand>
-          <Nav className="justify-content-end">
-            <Nav.Link href="/data">Data</Nav.Link>
-            <Nav.Link href="/todo">Todo</Nav.Link>
-            <Button onClick={handleLogout}>Logout</Button>
-          </Nav>
-        </Navbar>
+            <Nav className="justify-content-end">
+                <Nav.Link href="/todo">Mes Tâches</Nav.Link>
+                <Nav.Link href="/data">Articles</Nav.Link>
+                <Button onClick={() => this.handleLogout()}>Logout</Button>    
+            </Nav>
+          </Navbar>
+          : <Redirect to="/login"/>
+        }
         <div className="wrapper">
-          <Switch>
-            <Route exact path="/login">
-              <CLogin user={user} setUser={setUser}/>
-            </Route>
-            <Route exact path="/signup" component={CSignup}/>
-            <Route path="/data">
-              <CData user={user}/>
-            </Route>
-            <Route path="/todo">
-              <CTodo user={user} setUser={setUser}/>
-            </Route>
-          </Switch>
+        <Switch>
+          <PrivateRoute restricted={true} component={Home} path="/" exact/> 
+            <PublicRoute restricted={false} exact path="/login" component={CLogin}/>
+            <PublicRoute restricted={false} exact path="/signup" component={CSignup}/>
+            <Route path="/data" component={CData}/>
+            <Route path="/todo" component={CTodo}/>
+        </Switch>
         </div>
       </Router>
-  );
+    );
+  }
 }
+
+export default App;
