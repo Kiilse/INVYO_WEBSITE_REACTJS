@@ -1,5 +1,6 @@
 const TOKEN_KEY = 'jwt';
 const REFRESH_KEY = 'tok';
+const PRINT_KEY = 'prt'
 
 export const login = () => {
     localStorage.setItem(TOKEN_KEY, 'TestLogin');
@@ -27,6 +28,22 @@ export const needToRefresh = () => {
 
 export const isrefresh = () => {
     if (localStorage.getItem(REFRESH_KEY)) {
+        return true;
+    }
+    return false;
+}
+
+export const prints = () => {
+    localStorage.setItem(PRINT_KEY, 'Print');
+    window.location.reload();
+}
+
+export const Donotprint = () => {
+    localStorage.removeItem(PRINT_KEY);
+}
+
+export const isprintable = () => {
+    if (localStorage.getItem(PRINT_KEY)) {
         return true;
     }
     return false;

@@ -12,8 +12,8 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 
 import { Redirect, Route } from 'react-router-dom';
-import PrivateRoute from './components/PrivateRoute'
-import PublicRoute from './components/PublicRoute'
+import PrivateRoute from './components/route/PrivateRoute'
+import PublicRoute from './components/route/PublicRoute'
 
 import CLogin from './components/CLogin/CLogin'
 import CSignup from './components/CLogin/CSignup'
@@ -70,8 +70,8 @@ class App extends Component {
           <PrivateRoute restricted={true} component={Home} path="/" exact/> 
             <PublicRoute restricted={false} exact path="/login" component={CLogin}/>
             <PublicRoute restricted={false} exact path="/signup" component={CSignup}/>
-            <Route path="/data" component={CData}/>
-            <Route path="/todo" component={CTodo}/>
+            <PrivateRoute path="/data" component={CData}/>
+            <PrivateRoute path="/todo" component={CTodo}/>
         </Switch>
         </div>
       </Router>
