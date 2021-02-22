@@ -11,7 +11,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect} from 'react-router-dom';
 import PrivateRoute from './components/route/PrivateRoute'
 import PublicRoute from './components/route/PublicRoute'
 

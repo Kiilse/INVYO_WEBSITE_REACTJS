@@ -37,6 +37,8 @@ const Login = (props) => {
                     setIsErrorPS(true);
                     logout()
                     return
+                default:
+                    break
                 }
             }
         )
