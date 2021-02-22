@@ -53,7 +53,7 @@ class Todo extends Component {
         this.setState({list:listValue})
         localStorage.setItem('list',JSON.stringify(listValue))
     }
-
+    
     render () {
         return (
             <div className="main-container">

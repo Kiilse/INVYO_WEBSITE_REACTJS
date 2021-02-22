@@ -20,7 +20,7 @@ import CSignup from './components/CLogin/CSignup'
 import CData from './components/CData/Cdata'
 import CTodo from './components/CTodo/Ctodo'
 
-import { isLogin, logout } from './utils';
+import { isLogin, logout, refreshed, isrefresh, needToRefresh } from './utils';
 
 class Home extends Component {
   render() {
@@ -33,22 +33,27 @@ class Home extends Component {
 }
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+ 
   handleLogout = () => {
     fire.auth().signOut();
     logout();
-    return (
-      <Redirect to="/login"/>
-    )
+    needToRefresh();
+    window.location.reload();
   }
-
+  
+  refreshed () {
+    if (isrefresh() === false) {
+      window.location.reload()
+      refreshed()
+    }
+  }
+ 
   render() {
     console.log(isLogin())
+    console.log(isrefresh())
     return (
       <Router>
+        {isLogin() && this.refreshed()}
         {isLogin() ? 
         <Navbar bg="dark" variant="dark">
           <Navbar.Brand href="/">INVYO TEST</Navbar.Brand>

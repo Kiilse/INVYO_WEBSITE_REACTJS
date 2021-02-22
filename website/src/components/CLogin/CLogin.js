@@ -36,7 +36,7 @@ const Login = (props) => {
             }
           })
           login();
-          props.history.push('/todo');    
+          window.location.reload();
     }
 
     return (
