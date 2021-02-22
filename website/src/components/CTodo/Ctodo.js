@@ -3,6 +3,14 @@ import moment from 'moment';
 import uuid from 'uuid';
 import {prints, Donotprint, isprintable} from "../../utils"
 
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import FormControl from 'react-bootstrap/FormControl';
+import ListGroup from 'react-bootstrap/ListGroup';
+
+
+import "./Ctodo.css"
+
 class Todo extends Component {
     constructor(props) {
         super(props);
@@ -101,35 +109,45 @@ class Todo extends Component {
     
     render () {
         return (
-            <div className="main-container">
-                <h1>Todo app</h1>
-                <hr/>
-                <div className="container">
-                    <input type="text" placeholder="Task Name" ref={this.input}/>
-                    <input type="text" placeholder="Task Description" ref={this.description}/>
-                    <input type="date" placeholder="Task ending" ref={this.endDate}/>
-                    <button onClick={this.addtask} className="button">Add</button>
-                    <button onClick={this.changePrint}> Change Print</button>
-                    <ol>
-                        {
-                            this.state.list.map((item,index)=>
-                            {
-                                return(<li key={item.id}> {item.value}
-                                    <p>{item.description}</p>
-                                    <p> This task end on {item.endDate}</p>
-                                    <p>{item.states}</p>
-                                    <p>{item.Date}</p>
-                                    <button className="button" type="button" value="delete" data-key={index}>
-                                        Edit
-                                    </button>
-                                    <button className="button" type="button" value="delete" data-key={index} onClick={(e) => {if (window.confirm('Are you sure you wish to delete this item?')) this.deleteItem(e)}}>
-                                        Delete
-                                    </button>
-                                </li>)
-                            })
-                        }
-                    </ol>
+            <div className="forms">
+                <div className="card-1">
+                    <Card>
+                        <Card.Body>
+                            <Card.Title>Todo</Card.Title>
+                            <FormControl type="text" placeholder="Task Name" ref={this.input} />
+                            <br/>
+                            <FormControl type="text" placeholder="Task Description" ref={this.description}/>
+                            <br/>
+                            <FormControl type="date" placeholder="Task ending" ref={this.endDate}/>
+                            <br/>
+                            <Button variant="dark" onClick={this.addtask} >Add</Button> {'    '}
+                            <Button variant="dark" onClick={this.changePrint}> Change Print</Button>
+                        </Card.Body>
+                    </Card>
                 </div>
+                { 
+                    this.state.list.map((item,index)=> {
+                        return(
+                            <div className="card-2">
+                                <Card>
+                                    <Card.Text></Card.Text>
+                                        <ListGroup key={item.id}> {item.value}
+                                        <ListGroup.Item>{item.description}</ListGroup.Item>
+                                        <ListGroup.Item> This task end on {item.endDate}</ListGroup.Item>
+                                        <ListGroup.Item>{item.states}</ListGroup.Item>
+                                        <ListGroup.Item>{item.Date}</ListGroup.Item>
+                                    </ListGroup>
+                                    <Button  variant="dark" size="lg" type="button" value="delete" data-key={index} >
+                                        Edit
+                                    </Button> {' '}
+                                    <Button  variant="dark" size="lg" type="button" value="delete" data-key={index} onClick={(e) => {if (window.confirm('Are you sure you wish to delete this item?')) this.deleteItem(e)}}>
+                                        Delete
+                                    </Button>
+                                </Card>
+                            </div>
+                        )
+                    })
+                }
             </div>
         )
     }

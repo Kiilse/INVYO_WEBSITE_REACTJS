@@ -1,6 +1,6 @@
 const TOKEN_KEY = 'jwt';
 const REFRESH_KEY = 'tok';
-const PRINT_KEY = 'prt'
+const PRINT_KEY = 'prt';
 
 export const login = () => {
     localStorage.setItem(TOKEN_KEY, 'TestLogin');

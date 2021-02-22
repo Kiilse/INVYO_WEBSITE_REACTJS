@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import fire from '../../fire';
-import { login, isLogin } from '../../utils'
+import { login, isLogin, logout } from '../../utils'
 import { Redirect} from 'react-router-dom';
+import FormControl from 'react-bootstrap/FormControl';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 import './authForm.css'
 
 const Login = (props) => {
@@ -19,24 +22,26 @@ const Login = (props) => {
     const handleLogin = () => {
         clearErrors();
         fire
-          .auth()
-          .signInWithEmailAndPassword(userName, password)
-          .catch(err => {
+            .auth()
+            .signInWithEmailAndPassword(userName, password)
+            .catch(err => {
             switch(err.code) {
-              case "auth/invalid-email":
-              case "auth/user-disabled":
-              case "auth/user-not-found":
-                setIsErrorUS(true);
-                return;
-              case "auth/wrong-password":
-                setIsErrorPS(true);
-                return;
-              default:
-                break  
+                case "auth/invalid-email":
+                case "auth/user-disabled":
+                case "auth/user-not-found":
+                    setIsErrorUS(true);
+                    logout()
+                    return
+                
+                case "auth/wrong-password":
+                    setIsErrorPS(true);
+                    logout()
+                    return
+                }
             }
-          })
-          login();
-          window.location.reload();
+        )
+        login();
+        window.location.reload()
     }
 
     return (
@@ -44,17 +49,19 @@ const Login = (props) => {
         {isLogin() ?
         <Redirect to="/todo" /> 
         : 
-        <div className="card">
-            <div className="form">
-                <input className="input" type="username" value={userName} onChange={e => { setUserName(e.target.value)}} placeholder="email"/>
-                <input className="input" type="password" value={password} onChange={e => { setPassword(e.target.value)}} placeholder="password"/>   
-                <button onClick={handleLogin}>Sign in</button>
-            </div>
-            <Link to="/signup">Don't have an account?</Link>
-            {isErrorUS && <div className="error">The username or password provided was incorrect!</div>}
-            {isErrorPS && <div className="error">The username or password provided was incorrect!</div>}
-        </div>
-        
+            <Card>
+                <Card.Body>
+                    <div className="login">
+                    <Card.Title>LogIn</Card.Title>
+                        <FormControl className="input" type="username" value={userName} onChange={e => { setUserName(e.target.value)}} placeholder="email"/>
+                        <FormControl className="input" type="password" value={password} onChange={e => { setPassword(e.target.value)}} placeholder="password"/>   
+                        <Button variant="dark" onClick={handleLogin}>Sign in</Button>
+                        <Link to="/signup">Don't have an account?</Link>
+                        {isErrorUS && <div className="error">The username was incorrect!</div>}
+                        {isErrorPS && <div className="error">Password provided was incorrect!</div>}
+                    </div>
+                </Card.Body>
+            </Card>
         }
         </div>
     );

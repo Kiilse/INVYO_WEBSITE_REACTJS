@@ -49,8 +49,6 @@ class App extends Component {
   }
  
   render() {
-    console.log(isLogin())
-    console.log(isrefresh())
     return (
       <Router>
         {isLogin() && this.refreshed()}
@@ -63,7 +61,8 @@ class App extends Component {
                 <Button onClick={() => this.handleLogout()}>Logout</Button>    
             </Nav>
           </Navbar>
-          : <Redirect to="/login"/>
+          : 
+          <Redirect to="/login"/>
         }
         <div className="wrapper">
         <Switch>
